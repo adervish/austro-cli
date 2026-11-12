@@ -1,0 +1,14 @@
+# Build / tooling artifacts
+.DS_Store
+.build/
+.swiftpm/
+.tools/
+dist/
+
+# MacCAN/PCBUSB header (© UV Software) — fetched by scripts/fetch-pcbusb.sh, not redistributed
+Sources/CPCBUSB/PCBUSB.h
+**/PCBUSB.h
+
+# Local secrets live in ~/.config/austro/ (outside the repo) — never commit keys
+*.pass
+ae3-ukey.json
