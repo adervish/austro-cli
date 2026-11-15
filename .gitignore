@@ -12,3 +12,6 @@ Sources/CPCBUSB/PCBUSB.h
 # Local secrets live in ~/.config/austro/ (outside the repo) — never commit keys
 *.pass
 ae3-ukey.json
+
+# field-test debug bundles (may contain real flight data)
+austro-fieldtest-*/
