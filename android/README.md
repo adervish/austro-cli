@@ -37,7 +37,7 @@ code (`can/Kwp.kt`), and that block is covered by unit tests.
 - A **PEAK PCAN-USB** adapter (USB ID `0C72:000C`), a USB-C OTG adapter or cable, and the
   harness to the engine's diagnostic connector. The adapter is bus-powered; no hub needed.
 - A computer with either **Android Studio**, or **JDK 17** plus the Android SDK
-  (platform 35), to build the app. There is no prebuilt APK: see "Why no APK" below.
+  (platform 35), to build the app. A prebuilt APK without keys is provided for the Live tab only.
 - For anything beyond the Live tab, your **two keys** from your own licensed AE300 Wizard.
 
 ## 1. Add your keys
@@ -89,11 +89,15 @@ export ANDROID_HOME=~/Library/Android/sdk # or set sdk.dir in local.properties
 `./gradlew :app:assembleDebug` and install `app/build/outputs/apk/debug/app-debug.apk`
 with `adb install` or by opening the file on the phone.
 
-### Why no APK
+### Prebuilt APK (Live tab only)
 
-Your keys are compiled into the app (`BuildConfig`), so **an APK you build contains your
-passphrase and key mask**. Do not share it or upload it anywhere. For the same reason this
-project does not publish a prebuilt APK.
+`dist/austro-reader-0.1.0-debug-nokeys.apk` is a debug build made **without any keys**.
+Install it with `adb install`, or copy it to the phone and open it (allow installing from
+unknown sources). The Live tab works; Faults, Flash and Log report a missing-key error.
+
+To use those tabs, build the app yourself with your keys as above. Keys are compiled into
+the app (`BuildConfig`), so **an APK you build with keys contains your passphrase and key
+mask**. Do not share it or upload it anywhere.
 
 ## 3. Use it
 
