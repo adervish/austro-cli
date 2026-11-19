@@ -17,6 +17,7 @@ import com.austro.reader.can.DiagException
 import com.austro.reader.can.DiagSecurity
 import com.austro.reader.can.EcuDatalogReader
 import com.austro.reader.can.IsoTp
+import com.austro.reader.can.Keys
 import com.austro.reader.can.Kwp
 import com.austro.reader.can.PcanDeviceInfo
 import com.austro.reader.can.PcanUsbSource
@@ -120,7 +121,7 @@ class LiveViewModel(app: Application) : AndroidViewModel(app) {
                 val dtcs = try { kwp.readDTCs() } catch (e: DiagException) {
                     if (e.nrc == 0x33) {
                         val mask = DiagSecurity.resolveMask()
-                            ?: throw DiagException("fault read needs the security key mask (not set at build time)")
+                            ?: throw DiagException("fault read needs the security key mask. Add it on the Keys tab.")
                         kwp.securityAccess(mask); kwp.readDTCs()
                     } else throw e
                 }
@@ -148,7 +149,7 @@ class LiveViewModel(app: Application) : AndroidViewModel(app) {
                     progress = { p -> flashProgress = p.fraction.toFloat(); diagStatus = p.message })
                 flashSummary = result.rows.groupBy { "${it.ecu}#${it.session}" }
                     .toSortedMap().map { (k, v) -> "session $k: ${v.size} rows" }
-                val pass = BuildConfig.AE3_PASSPHRASE
+                val pass = Keys.passphrase()
                 if (pass.isNotBlank() && result.rawSectors.isNotEmpty()) {
                     val df = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
                     val sn = result.engineSerial?.let { s ->

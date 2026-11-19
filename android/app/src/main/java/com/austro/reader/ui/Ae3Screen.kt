@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.austro.reader.BuildConfig
+import com.austro.reader.can.Keys
 import com.austro.reader.can.Ae3Crypto
 import com.austro.reader.can.Ae3Decoder
 import kotlinx.coroutines.Dispatchers
@@ -75,8 +75,8 @@ fun Ae3Screen() {
                     val looksXml = raw.isNotEmpty() && (raw[0] == '<'.code.toByte() ||
                         (raw.size >= 3 && raw[0] == 0xEF.toByte() && raw[1] == 0xBB.toByte() && raw[2] == 0xBF.toByte()))
                     val xml = if (looksXml) raw else {
-                        val pass = BuildConfig.AE3_PASSPHRASE
-                        if (pass.isEmpty()) throw IllegalStateException("No passphrase baked in: set ae3Passphrase in local.properties and rebuild.")
+                        val pass = Keys.passphrase()
+                        if (pass.isEmpty()) throw IllegalStateException("The .ae3 passphrase is not set. Add it on the Keys tab.")
                         Ae3Crypto.decryptAe3(raw, pass)
                     }
                     Ae3Decoder.decode(xml)

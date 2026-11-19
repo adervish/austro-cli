@@ -25,7 +25,7 @@ class EcuDatalogReader {
         fun step(f: Double, m: String) { progress(Progress(m, f)); log(m) }
 
         val mask = DiagSecurity.resolveMask()
-            ?: throw DiagException("security key mask not available (AE3_UKEY not set at build time)")
+            ?: throw DiagException("the security key mask is not set. Add it on the Keys tab.")
         val txId = if (ecu == "A") 0x7E0 else 0x7E1
         val rxId = if (ecu == "A") 0x7E8 else 0x7E9
         val kwp = Kwp(IsoTp(link.asLink(), txId, rxId))

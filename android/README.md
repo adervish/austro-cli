@@ -20,10 +20,11 @@ code (`can/Kwp.kt`), and that block is covered by unit tests.
 | **Log** | Opens a Wizard `.ae3` datalogger export and shows per-session and per-signal summaries | No bus access | Passphrase |
 | **Faults** | Reads stored fault codes (DTCs) from ECU A or B | Yes, read requests | Key mask |
 | **Flash** | Reads the datalogger flash from ECU A or B and saves a `.ae3` file | Yes, read requests | Both |
+| **Keys** | Paste in your two keys; stored on the phone | No bus access | |
 
 ## Status
 
-- **Builds, and its unit tests pass** (decoder, USB frame parser, read-only allowlist).
+- **Builds, and its unit tests pass** (decoder, USB frame parser, read-only allowlist, key parsing).
 - **Not yet verified on a phone against a real adapter and engine.** The PCAN-USB bring-up
   and the diagnostic flows are ports of the working macOS implementation, but treat the
   first on-device run as a test.
@@ -36,36 +37,20 @@ code (`can/Kwp.kt`), and that block is covered by unit tests.
 - An Android phone or tablet with **USB host (OTG)** support, Android 7.0 (API 24) or later.
 - A **PEAK PCAN-USB** adapter (USB ID `0C72:000C`), a USB-C OTG adapter or cable, and the
   harness to the engine's diagnostic connector. The adapter is bus-powered; no hub needed.
-- A computer with either **Android Studio**, or **JDK 17** plus the Android SDK
-  (platform 35), to build the app. A prebuilt APK without keys is provided for the Live tab only.
+- Nothing else to install the prebuilt APK. To build it yourself: **Android Studio**, or
+  **JDK 17** plus the Android SDK (platform 35).
 - For anything beyond the Live tab, your **two keys** from your own licensed AE300 Wizard.
 
-## 1. Add your keys
+## 1. Install
 
-The app needs the same two constants as the command-line tool. They are not in this
-repository. Extract them from your own Wizard install with the guided script in the
-repository root (details in the [main README](../README.md)):
+### Prebuilt APK (simplest)
 
-```sh
-bash scripts/setup-keys.sh
-```
+`dist/austro-reader-0.1.0-debug-nokeys.apk` is a debug build that contains **no keys**.
+Copy it to the phone and open it (allow installing from unknown sources when asked), or
+run `adb install dist/austro-reader-0.1.0-debug-nokeys.apk` from a computer. The Live tab
+works straight away; add your keys in the app (next section) for the other tabs.
 
-That writes `~/.config/austro/ae3.pass` and `~/.config/austro/ae3-ukey.json`. Then copy
-them into `android/local.properties`, which is gitignored:
-
-```sh
-cd android
-printf 'ae3Passphrase=%s\nae3Ukey=%s\n' \
-  "$(cat ~/.config/austro/ae3.pass)" \
-  "$(tr -d ' \n' < ~/.config/austro/ae3-ukey.json)" >> local.properties
-```
-
-You can skip this step if you only want the Live tab. The other tabs report a missing-key
-error without it.
-
-## 2. Build and install
-
-### With Android Studio (simplest)
+### Build it yourself with Android Studio
 
 1. Open the `android` folder in Android Studio and let it sync. It installs the SDK and
    writes `sdk.dir` into `local.properties` for you.
@@ -74,7 +59,7 @@ error without it.
 3. Connect the phone to the computer, accept the debugging prompt, pick the phone in the
    device menu and press **Run**.
 
-### From the command line
+### Build it yourself from the command line
 
 ```sh
 cd android
@@ -86,18 +71,48 @@ export ANDROID_HOME=~/Library/Android/sdk # or set sdk.dir in local.properties
 ```
 
 `installDebug` needs USB debugging enabled as above. To copy the APK by hand instead, run
-`./gradlew :app:assembleDebug` and install `app/build/outputs/apk/debug/app-debug.apk`
-with `adb install` or by opening the file on the phone.
+`./gradlew :app:assembleDebug` and install `app/build/outputs/apk/debug/app-debug.apk`.
 
-### Prebuilt APK (Live tab only)
+## 2. Add your keys
 
-`dist/austro-reader-0.1.0-debug-nokeys.apk` is a debug build made **without any keys**.
-Install it with `adb install`, or copy it to the phone and open it (allow installing from
-unknown sources). The Live tab works; Faults, Flash and Log report a missing-key error.
+The app needs the same two constants as the command-line tool: the `.ae3` passphrase and
+the ECU security key mask. They are not in this repository or in the prebuilt APK. Extract
+them from your own licensed Wizard install with the guided script in the repository root
+(details in the [main README](../README.md)):
 
-To use those tabs, build the app yourself with your keys as above. Keys are compiled into
-the app (`BuildConfig`), so **an APK you build with keys contains your passphrase and key
-mask**. Do not share it or upload it anywhere.
+```sh
+bash scripts/setup-keys.sh
+```
+
+That writes `~/.config/austro/ae3.pass` and `~/.config/austro/ae3-ukey.json`.
+
+### In the app (no rebuild)
+
+Open the **Keys** tab and paste each key, then tap its Save button.
+
+- **Passphrase:** the contents of `ae3.pass`.
+- **Key mask:** the contents of `ae3-ukey.json`. Any layout of the 32 numbers (8 rows of 4)
+  is accepted: JSON, the brace form copied from the Wizard source, or plain numbers,
+  decimal or `0x` hex.
+
+The keys are kept in the app's private storage on that phone, are excluded from Android
+backups, and are never displayed again; the tab only shows whether each one is set.
+*Remove keys from this device* deletes them. Uninstalling the app also removes them.
+
+### At build time (optional)
+
+If you build the app yourself you can compile the keys in instead, through
+`android/local.properties`, which is gitignored:
+
+```sh
+cd android
+printf 'ae3Passphrase=%s\nae3Ukey=%s\n' \
+  "$(cat ~/.config/austro/ae3.pass)" \
+  "$(tr -d ' \n' < ~/.config/austro/ae3-ukey.json)" >> local.properties
+```
+
+Keys entered in the app take priority over compiled-in ones. **An APK built this way
+contains your passphrase and key mask**, so treat that file like the keys themselves.
 
 ## 3. Use it
 

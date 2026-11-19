@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import com.austro.reader.can.Keys
 import com.austro.reader.can.PcanUsbSource
 import com.austro.reader.ui.AustroApp
 
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Keys.init(this)
 
         val filter = IntentFilter().apply {
             addAction(PcanUsbSource.ACTION_USB_PERMISSION)

@@ -1,7 +1,5 @@
 package com.austro.reader.can
 
-import com.austro.reader.BuildConfig
-import org.json.JSONArray
 
 /** Minimal CAN link the ISO-TP / KWP layers drive (implemented by PcanUsbSource.asLink()). */
 interface CanLink {
@@ -229,15 +227,7 @@ class Kwp(private val tp: IsoTp) {
     )
 }
 
-/** Loads the 8x4 security key mask embedded at build time (BuildConfig.AE3_UKEY, a JSON 8x4). */
+/** The 8x4 security key mask: entered on the Keys tab, or compiled in as a fallback. */
 object DiagSecurity {
-    fun resolveMask(): Array<IntArray>? {
-        val json = BuildConfig.AE3_UKEY
-        if (json.isBlank()) return null
-        return try {
-            val arr = JSONArray(json)
-            if (arr.length() != 8) return null
-            Array(8) { i -> val row = arr.getJSONArray(i); IntArray(4) { j -> row.getInt(j) } }
-        } catch (_: Exception) { null }
-    }
+    fun resolveMask(): Array<IntArray>? = Keys.mask()
 }

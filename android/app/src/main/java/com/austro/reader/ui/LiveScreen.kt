@@ -44,7 +44,7 @@ fun AustroApp(vm: LiveViewModel) {
             var tab by androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(0) }
             Column(Modifier.fillMaxSize()) {
                 androidx.compose.material3.TabRow(selectedTabIndex = tab) {
-                    listOf("Live", "Faults", "Flash", "Log").forEachIndexed { i, label ->
+                    listOf("Live", "Faults", "Flash", "Log", "Keys").forEachIndexed { i, label ->
                         androidx.compose.material3.Tab(selected = tab == i, onClick = { tab = i },
                             text = { Text(label) })
                     }
@@ -53,7 +53,8 @@ fun AustroApp(vm: LiveViewModel) {
                     0 -> LiveScreen(vm)
                     1 -> FaultsScreen(vm)
                     2 -> FlashScreen(vm)
-                    else -> Ae3Screen()
+                    3 -> Ae3Screen()
+                    else -> KeysScreen()
                 }
             }
         }
