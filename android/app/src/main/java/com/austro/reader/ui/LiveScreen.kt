@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -42,7 +43,9 @@ fun AustroApp(vm: LiveViewModel) {
     MaterialTheme {
         Surface(Modifier.fillMaxSize()) {
             var tab by androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(0) }
-            Column(Modifier.fillMaxSize()) {
+            // Android 15 draws apps edge to edge: keep the tabs clear of the status bar,
+            // the navigation bar and the keyboard.
+            Column(Modifier.fillMaxSize().safeDrawingPadding()) {
                 androidx.compose.material3.TabRow(selectedTabIndex = tab) {
                     listOf("Live", "Faults", "Flash", "Log", "Keys").forEachIndexed { i, label ->
                         androidx.compose.material3.Tab(selected = tab == i, onClick = { tab = i },
