@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Plain platform theme; the Compose MaterialTheme supplies the actual styling,
+         so no View-based Material Components dependency is needed. -->
+    <style name="Theme.AustroReader" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

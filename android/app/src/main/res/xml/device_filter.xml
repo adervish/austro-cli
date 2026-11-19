@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PEAK-System PCAN-USB (classic): vendor 0x0C72 (3186), product 0x000C (12).
+         Vendor-specific device (USB class 0xFF) — accessible via the USB Host API. -->
+    <usb-device vendor-id="3186" product-id="12" />
+</resources>

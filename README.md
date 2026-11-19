@@ -19,6 +19,11 @@ the write/erase/clear services are hard-blocked in code.
 > the **ground, engine off**, at your own risk; connecting non-approved devices to a
 > certified aircraft may be regulated — check with your mechanic.
 
+## Android app
+
+An Android version (same adapter, plugged into the phone over USB-C) lives in
+[`android/`](android/README.md), with its own build and install instructions.
+
 ## What you need
 
 - A **PEAK PCAN-USB** or **PCAN-USB FD** adapter (classic CAN, 500 kbit/s) and the correct
